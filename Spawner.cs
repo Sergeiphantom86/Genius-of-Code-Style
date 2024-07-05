@@ -1,7 +1,5 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Transform))]
-
 public class Spawner : MonoBehaviour
 {
     [SerializeField] private float _speed;
@@ -12,7 +10,10 @@ public class Spawner : MonoBehaviour
 
     private void Start()
     {
-        CreateGameObjects();
+        for (int i = 0; i < _storage.childCount; i++)
+        {
+            _places[i] = _storage.GetChild(i).transform;
+        }
     }
 
     private void FixedUpdate()
@@ -21,19 +22,11 @@ public class Spawner : MonoBehaviour
 
         if (transform.position == _places[_quantityOfPlace].position)
         {
-            UseFollowing();
+            AddNewLocation();
         }
     }
 
-    private void CreateGameObjects()
-    {
-        for (int i = 0; i < _storage.childCount; i++)
-        {
-            _places[i] = _storage.GetChild(i).GetComponent<Transform>();
-        }
-    }
-
-    private void UseFollowing()
+    private void AddNewLocation()
     {
         _quantityOfPlace++;
 
