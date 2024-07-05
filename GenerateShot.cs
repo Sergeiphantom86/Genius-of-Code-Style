@@ -11,7 +11,7 @@ public class GenerateShot : MonoBehaviour
     [SerializeField] private float _boost;
     [SerializeField] private float _delay;
 
-    void Start()
+    private void Start()
     {
         StartCoroutine(ReleaseEvenly());
     }
@@ -20,7 +20,7 @@ public class GenerateShot : MonoBehaviour
     {
         GameObject newBullet = Instantiate(_prefab, transform.position + GetPosition(), Quaternion.identity);
 
-        SetDirectionMovement(SetBoost(newBullet));
+        SetDirectionMovement(newBullet);
     }
 
     private Vector3 GetPosition()
@@ -31,24 +31,23 @@ public class GenerateShot : MonoBehaviour
     private void SetDirectionMovement(GameObject newBullet)
     {
         newBullet.transform.up = GetPosition();
-    }
 
-    private GameObject SetBoost(GameObject newBullet)
-    {
-        newBullet.GetComponent<Rigidbody>().velocity = GetPosition() * _boost;
-
-        return newBullet;
+        if (TryGetComponent(out Rigidbody _))
+        {
+            newBullet.GetComponent<Rigidbody>().velocity = GetPosition() * _boost;
+        }
     }
 
     private IEnumerator ReleaseEvenly()
     {
         bool isWork = true;
+        float delay = _delay;
         
         while (isWork)
         {
             Create();
 
-            yield return new WaitForSeconds(_delay);
+            yield return new WaitForSeconds(delay);
         }
     }
 }
