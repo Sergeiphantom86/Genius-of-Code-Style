@@ -3,51 +3,35 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 
-public class GenerateShot : MonoBehaviour
+public class BulletShooting : MonoBehaviour
 {
-    [SerializeField] private GameObject _prefab;
-    [SerializeField] private Transform _position;
-
+    [SerializeField] private Rigidbody _prefab;
     [SerializeField] private float _boost;
     [SerializeField] private float _delay;
 
+    private Transform _target;
+
     private void Start()
     {
-        StartCoroutine(ReleaseEvenly());
+        StartCoroutine(Shoot());
     }
 
-    private void Create()
-    {
-        GameObject newBullet = Instantiate(_prefab, transform.position + GetPosition(), Quaternion.identity);
-
-        SetDirectionMovement(newBullet);
-    }
-
-    private Vector3 GetPosition()
-    {
-        return (_position.position - transform.position).normalized;
-    }
-
-    private void SetDirectionMovement(GameObject newBullet)
-    {
-        newBullet.transform.up = GetPosition();
-
-        if (TryGetComponent(out Rigidbody _))
-        {
-            newBullet.GetComponent<Rigidbody>().velocity = GetPosition() * _boost;
-        }
-    }
-
-    private IEnumerator ReleaseEvenly()
+    private IEnumerator Shoot()
     {
         bool isWork = true;
-        float delay = _delay;
-        
+        WaitForSeconds delay = new(_delay);
+
         while (isWork)
         {
-            Create();
+            Vector3 direction = (_target.position - transform.position).normalized;
+            Rigidbody newBullet = Instantiate(_prefab, transform.position + direction, Quaternion.identity);
 
-            yield return new WaitForSeconds(delay);
+            Rigidbody bulletRigidbody = newBullet.GetComponent<Rigidbody>();
+
+            newBullet.transform.up = direction;
+            bulletRigidbody.velocity = direction * _boost;
+
+            yield return delay;
         }
     }
 }
