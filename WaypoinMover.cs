@@ -17,9 +17,7 @@ public class WaypoinMover : MonoBehaviour
 
     private void Update()
     {
-        Transform pointByNumberInArray = _places[_quantityOfPlace];
-
-        transform.position = Vector3.MoveTowards(transform.position, pointByNumberInArray.position, _speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, _places[_quantityOfPlace].position, _speed * Time.deltaTime);
 
         if (transform.position == _places[_quantityOfPlace].position)
             GoToNextDestination();
